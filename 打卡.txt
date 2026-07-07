@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班級公司 - 員工打卡系統</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 { color: #2c3e50; }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover { background-color: #2ecc71; }
+        .record-box {
+            margin-top: 20px;
+            text-align: left;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .record-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🏢 班級公司打卡鐘</h1>
+        <p>請輸入你的員工姓名或座號</p>
+        
+        <input type="text" id="employeeName" placeholder="例如：1號 小明">
+        <br>
+        <button onclick="clockIn()">上班打卡</button>
+
+        <div class="record-box">
+            <h3>📋 今日打卡紀錄</h3>
+            <div id="recordList"></div>
+        </div>
+    </div>
+
+    <script>
+        // 載入時顯示過去的紀錄
+        window.onload = function() {
+            displayRecords();
+        };
+
+        function clockIn() {
+            const nameInput = document.getElementById('employeeName');
+            const name = nameInput.value.trim();
+
+            if (name === "") {
+                alert("請先輸入員工姓名或座號喔！");
+                return;
+            }
+
+            const now = new Date();
+            const timeString = now.toLocaleDateString('zh-TW') + " " + now.toLocaleTimeString('zh-TW');
+            const record = `✅ ${name} - 於 ${timeString} 完成打卡`;
+
+            // 取得舊紀錄，加入新紀錄後存回 LocalStorage
+            let records = JSON.parse(localStorage.getItem('classPunchRecords')) || [];
+            records.unshift(record); // 將新紀錄加到最前面
+            localStorage.setItem('classPunchRecords', JSON.stringify(records));
+
+            nameInput.value = ""; // 清空輸入框
+            displayRecords();
+            
+            alert(`${name}，打卡成功！祝你有個美好的一天！`);
+        }
+
+        function displayRecords() {
+            const recordList = document.getElementById('recordList');
+            const records = JSON.parse(localStorage.getItem('classPunchRecords')) || [];
+            
+            recordList.innerHTML = "";
+            if(records.length === 0) {
+                recordList.innerHTML = "<p style='color:#999;'>目前還沒有人打卡喔。</p>";
+                return;
+            }
+
+            records.forEach(record => {
+                const div = document.createElement('div');
+                div.className = 'record-item';
+                div.innerText = record;
+                recordList.appendChild(div);
+            });
+        }
+    </script>
+
+</body>
+</html>
