@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>502</title>
+    <title>學生打卡 & 數位聯絡簿</title>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -183,4 +184,216 @@
                         <div class="morning-title">⭐ 早自習任務 (08:30 前)</div>
                         <div class="morning-tasks">
                             <label><input type="checkbox"> 靜心晨讀 10分鐘</label>
-                            <label><input type="checkbox"> 繳交今日
+                            <label><input type="checkbox"> 繳交今日作業</label>
+                            <label><input type="checkbox"> 抄寫聯絡簿</label>
+                        </div>
+                    </div>
+
+                    <div class="bb-tray">
+                        <div class="chalk-stick chalk-white"></div>
+                        <div class="chalk-stick chalk-pink"></div>
+                        <div class="chalk-stick chalk-blue"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const defaultStudentCount = 30;
+        let studentsData = [];
+
+        // DOM 元素綁定
+        const clockEl = document.getElementById('digitalClock');
+        const gridEl = document.getElementById('studentGrid');
+        
+        // 區塊切換元素
+        const clockSection = document.getElementById('clockSection');
+        const summarySection = document.getElementById('summarySection');
+        const blackboardSection = document.getElementById('blackboardSection');
+        const navBtns = document.querySelectorAll('.nav-btn');
+
+        // 黑板元素
+        const bbDateDisplay = document.getElementById('bbDateDisplay');
+        const bbEditToggleBtn = document.getElementById('bbEditToggleBtn');
+        const bbEditableArea = document.getElementById('bbEditableArea');
+
+        const counts = { total: document.getElementById('totalCount'), present: document.getElementById('presentCount'), late: document.getElementById('lateCount'), absent: document.getElementById('absentCount'), excused: document.getElementById('excusedCount'), club: document.getElementById('clubCount') };
+        const resetBtn = document.getElementById('resetBtn');
+        const exportBtn = document.getElementById('exportBtn');
+
+        // 初始化
+        window.onload = function() {
+            loadStudentsData();
+            startClock();
+            renderGrid();
+            updateSummary();
+            setupResetButton();
+            setupExportButton();
+            setupNavButtons();
+            initBlackboard(); // 初始化黑板功能
+        };
+
+        // --- 數位時鐘 ---
+        function startClock() {
+            function update() {
+                const now = new Date();
+                clockEl.innerText = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+            }
+            update();
+            setInterval(update, 1000);
+        }
+
+        // --- 將時間物件轉為 HH:MM 格式 ---
+        function formatTime(dateString) {
+            if (!dateString) return '';
+            const d = new Date(dateString);
+            return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        }
+
+        // --- 數據載入與儲存 ---
+        function loadStudentsData() {
+            const storedData = localStorage.getItem('classManageStudentsDataV2');
+            if (storedData) { studentsData = JSON.parse(storedData); } 
+            else {
+                for (let i = 1; i <= defaultStudentCount; i++) {
+                    studentsData.push({ no: i, status: 'absent', punchTime: null });
+                }
+                saveStudentsData();
+            }
+        }
+        function saveStudentsData() { localStorage.setItem('classManageStudentsDataV2', JSON.stringify(studentsData)); }
+
+        // --- 網格渲染 ---
+        function renderGrid() {
+            gridEl.innerHTML = ''; 
+            studentsData.forEach((student, index) => {
+                const card = document.createElement('div');
+                card.className = `student-card is-${student.status}`;
+                card.dataset.index = index;
+
+                let displayText = '';
+                if (student.status === 'present' || student.status === 'late') {
+                    displayText = formatTime(student.punchTime);
+                } else if (student.status === 'absent') { displayText = '未到';
+                } else if (student.status === 'excused') { displayText = '請假';
+                } else if (student.status === 'club') { displayText = '社團'; }
+
+                card.innerHTML = `<div class="student-no">${student.no}</div><div class="student-status-text">${displayText}</div>`;
+                card.onclick = handleCardClick;
+                gridEl.appendChild(card);
+            });
+        }
+
+        // --- 卡片點擊處理 (僅保留打卡功能) ---
+        function handleCardClick() {
+            const index = this.dataset.index;
+            const student = studentsData[index];
+            const statusOrder = ['absent', 'present', 'late', 'excused', 'club'];
+            let currentIndex = statusOrder.indexOf(student.status);
+            let nextStatus = statusOrder[(currentIndex + 1) % statusOrder.length];
+
+            student.status = nextStatus;
+            if (nextStatus === 'present' || nextStatus === 'late') { student.punchTime = new Date().toISOString(); } 
+            else { student.punchTime = null; }
+
+            saveStudentsData();
+            renderGrid();
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const summary = { total: studentsData.length, present: 0, late: 0, absent: 0, excused: 0, club: 0 };
+            studentsData.forEach(student => { if (summary[student.status] !== undefined) summary[student.status]++; });
+            counts.total.innerText = summary.total; counts.present.innerText = summary.present; counts.late.innerText = summary.late; counts.absent.innerText = summary.absent; counts.excused.innerText = summary.excused; counts.club.innerText = summary.club;
+        }
+
+        function setupResetButton() {
+            resetBtn.onclick = function() {
+                if (confirm('確定要重置今日所有打卡狀態嗎？')) {
+                    studentsData.forEach(student => { student.status = 'absent'; student.punchTime = null; });
+                    saveStudentsData(); renderGrid(); updateSummary();
+                }
+            };
+        }
+
+        function setupExportButton() {
+            exportBtn.onclick = function() {
+                let csvContent = "data:text/csv;charset=utf-8,\uFEFF座號,狀態,打卡時間\n";
+                studentsData.forEach(s => {
+                    let timeStr = s.punchTime ? formatTime(s.punchTime) : '--';
+                    let statusName = { 'absent':'未到', 'present':'已到', 'late':'遲到', 'excused':'請假', 'club':'社團' }[s.status];
+                    csvContent += `${s.no},${statusName},${timeStr}\n`;
+                });
+                const link = document.createElement("a");
+                link.setAttribute("href", encodeURI(csvContent));
+                link.setAttribute("download", `打卡報表_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`);
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            };
+        }
+
+        // --- 導覽列切換邏輯 (重點修改區) ---
+        function setupNavButtons() {
+            navBtns.forEach(btn => {
+                btn.onclick = function() {
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    if (this.innerText.includes('聯絡簿')) {
+                        // 隱藏打卡相關區域
+                        clockSection.style.display = 'none';
+                        summarySection.style.display = 'none';
+                        gridEl.style.display = 'none';
+                        // 顯示大黑板
+                        blackboardSection.style.display = 'block';
+                    } else if (this.innerText.includes('打卡區')) {
+                        // 顯示打卡相關區域
+                        clockSection.style.display = 'block';
+                        summarySection.style.display = 'flex';
+                        gridEl.style.display = 'grid';
+                        // 隱藏大黑板
+                        blackboardSection.style.display = 'none';
+                        renderGrid(); 
+                    }
+                }
+            });
+        }
+
+        // --- 黑板專屬邏輯 ---
+        function initBlackboard() {
+            // 1. 自動填入今日日期 (轉換成: X月X日 (星期X) 格式)
+            const today = new Date();
+            const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            const dateString = `${today.getMonth() + 1}月${today.getDate()}日 (星期${weekdays[today.getDay()]})`;
+            bbDateDisplay.innerText = dateString;
+
+            // 2. 載入先前儲存的黑板內容 (如果有)
+            const savedBoardContent = localStorage.getItem('classBlackboardContent');
+            if(savedBoardContent) {
+                bbEditableArea.innerHTML = savedBoardContent;
+            }
+
+            // 3. 編輯 / 儲存按鈕切換
+            let isEditing = false;
+            bbEditToggleBtn.onclick = function() {
+                isEditing = !isEditing;
+                if(isEditing) {
+                    bbEditableArea.setAttribute('contenteditable', 'true');
+                    bbEditableArea.focus();
+                    this.innerText = '儲存';
+                    this.style.backgroundColor = '#2ecc71'; // 儲存鍵變綠色
+                    this.style.color = '#fff';
+                } else {
+                    bbEditableArea.setAttribute('contenteditable', 'false');
+                    this.innerText = '編輯';
+                    this.style.backgroundColor = '#f39c12'; // 恢復原本黃色
+                    this.style.color = '#333';
+                    
+                    // 將黑板的 HTML 內容存入 LocalStorage
+                    localStorage.setItem('classBlackboardContent', bbEditableArea.innerHTML);
+                }
+            };
+        }
+    </script>
+</body>
+</html>
