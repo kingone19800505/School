@@ -10,11 +10,11 @@
             --bg-color: #f4f6f8;
             --card-bg: #ffffff;
             --border-color: #e1e8ed;
-            --status-present: #2ecc71; /* 已到 綠色 */
-            --status-late: #ff6b6b;    /* 遲到 紅色 (調柔和一點配合截圖) */
-            --status-absent: #bdc3c7;  /* 未到 灰色 */
-            --status-excused: #9b59b6; /* 請假 紫色 */
-            --status-club: #3498db;    /* 社團 藍色 */
+            --status-present: #2ecc71;
+            --status-late: #ff6b6b;
+            --status-absent: #bdc3c7;
+            --status-excused: #9b59b6;
+            --status-club: #3498db;
             --text-color: #555;
             --title-color: #333;
         }
@@ -40,15 +40,13 @@
         /* Main Container */
         main { flex-grow: 1; padding: 25px; display: flex; flex-direction: column; align-items: center; overflow-y: auto; }
 
-        /* Digital Clock 時鐘 */
+        /* ---------------- 原本的打卡區塊樣式 ---------------- */
         .clock-section { margin-bottom: 20px; text-align: center; }
         .digital-clock { background-color: #212529; color: #ffff00; font-family: 'Courier New', Courier, monospace; font-size: 45px; font-weight: bold; padding: 10px 30px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); letter-spacing: 2px; display: inline-block; }
 
-        /* Summary Section 統計區 */
         .summary-section { width: 100%; max-width: 900px; display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
         .summary-badge { padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; display: flex; gap: 8px; background-color: #fff; border: 1px solid #eee; }
-        .summary-badge span { margin-left: 2px; }
-
+        
         .badge-total   { color: #4a90e2; border-color: #d0e3f7; background-color: #f0f7ff; }
         .badge-present { color: var(--status-present); border-color: #c3f0d5; background-color: #ebfbf0; }
         .badge-late    { color: var(--status-late); border-color: #ffcccc; background-color: #fff0f0; }
@@ -56,34 +54,60 @@
         .badge-excused { color: var(--status-excused); border-color: #e5ccff; background-color: #f7f0ff; }
         .badge-club    { color: var(--status-club); border-color: #cce5ff; background-color: #f0f7ff; }
 
-        /* Student Grid 學生卡片網格 */
         .grid-section { width: 100%; max-width: 1050px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; justify-items: center; }
         .student-card { width: 100%; aspect-ratio: 2 / 1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; border: 2px solid var(--border-color); background-color: #fff; }
         .student-card:active { transform: scale(0.95); }
-        
         .student-no { font-size: 26px; font-weight: bold; margin-bottom: 2px; color: inherit; }
         .student-status-text { font-size: 13px; font-weight: bold; color: inherit; }
 
-        /* 卡片狀態顏色 (邊框、文字與微底色) */
         .student-card.is-absent { border-color: #e4e7ed; color: #a8abb2; }
         .student-card.is-present { border-color: #95d475; color: #67c23a; background-color: #f0f9eb; }
         .student-card.is-late    { border-color: #f89898; color: #f56c6c; background-color: #fef0f0; }
         .student-card.is-excused { border-color: #d4b3ff; color: #b388ff; background-color: #faf5ff; }
         .student-card.is-club    { border-color: #a0cfff; color: #409eff; background-color: #ecf5ff; }
 
-        /* Contact Book Popup 聯絡簿彈窗 */
-        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(2px); }
-        .popup-content { background: #fff; padding: 25px; border-radius: 16px; width: 90%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .popup-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 18px; font-weight: bold; color: var(--primary-color); }
-        .close-popup { font-size: 26px; cursor: pointer; color: #999; line-height: 1; }
-        .close-popup:hover { color: #333; }
-        textarea.contact-input { width: 100%; height: 120px; padding: 12px; border: 1px solid #dcdfe6; border-radius: 8px; font-size: 15px; resize: none; margin-bottom: 15px; outline: none; transition: border-color 0.2s; }
-        textarea.contact-input:focus { border-color: var(--status-club); }
-        .popup-actions { display: flex; justify-content: flex-end; gap: 10px; }
-        .popup-btn { padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: bold; transition: opacity 0.2s; }
-        .popup-btn:hover { opacity: 0.8; }
-        .save-btn { background-color: var(--status-club); color: white; }
-        .cancel-btn { background-color: #f4f4f5; color: #909399; }
+        /* ---------------- 新增：黑板聯絡簿區塊樣式 ---------------- */
+        .blackboard-section { display: none; /* 預設隱藏 */ width: 100%; max-width: 1100px; padding: 10px; }
+        .blackboard-frame { background-color: #7b4f31; /* 木頭邊框顏色 */ padding: 15px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; }
+        .blackboard-inner { background-color: #2b3f36; /* 黑板深綠底色 */ border-radius: 8px; border: 2px solid #543420; padding: 30px 40px; color: #f4f1c9; /* 粉筆黃白色 */ min-height: 500px; position: relative; }
+        
+        /* 黑板頂部導覽列 */
+        .bb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 15px; }
+        .bb-title-group { display: flex; align-items: center; gap: 20px; }
+        .bb-title { font-size: 24px; font-weight: bold; color: #ffd700; display: flex; align-items: center; gap: 8px; }
+        .bb-date-nav { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px; font-size: 18px; }
+        .bb-nav-btn { background: none; border: none; color: #a9b7b0; cursor: pointer; font-size: 16px; transition: color 0.2s; }
+        .bb-nav-btn:hover { color: #fff; }
+        .bb-date { font-weight: bold; color: #fff; letter-spacing: 1px; }
+        
+        /* 黑板右側控制按鈕 */
+        .bb-controls { display: flex; gap: 10px; }
+        .bb-ctrl-btn { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 15px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .bb-ctrl-btn:hover { background-color: rgba(255,255,255,0.2); }
+        .bb-edit-btn { background-color: #f39c12; color: #333; font-weight: bold; border: none; }
+        .bb-edit-btn:hover { background-color: #f1c40f; }
+
+        /* 黑板內容編輯區 */
+        .bb-content-area { outline: none; }
+        .bb-content-area[contenteditable="true"] { background-color: rgba(255,255,255,0.05); border-radius: 8px; padding: 10px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+        
+        /* 粉筆列表排版 */
+        .chalk-list { font-size: 24px; line-height: 2; list-style-position: inside; column-count: 2; /* 兩排顯示 */ column-gap: 40px; margin-bottom: 40px; min-height: 150px; }
+        .chalk-list li::marker { color: #f39c12; font-weight: bold; }
+        
+        /* 早自習區塊 */
+        .bb-divider { border: 0; height: 1px; background: rgba(255,255,255,0.2); margin: 30px 0; }
+        .morning-title { font-size: 16px; color: #f39c12; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 4px; display: inline-block; margin-bottom: 20px; }
+        .morning-tasks { display: flex; gap: 30px; font-size: 22px; }
+        .morning-tasks label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .morning-tasks input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: #f39c12; }
+        
+        /* 黑板底部的板擦裝飾 */
+        .bb-tray { position: absolute; bottom: 8px; left: 40px; display: flex; gap: 15px; }
+        .chalk-stick { width: 35px; height: 6px; border-radius: 3px; }
+        .chalk-white { background: #fff; }
+        .chalk-pink { background: #ffb6c1; }
+        .chalk-blue { background: #87ceeb; }
 
     </style>
 </head>
@@ -95,24 +119,23 @@
         </div>
         <div class="nav-buttons">
             <button class="nav-btn"><span class="icon">💻</span>分屏顯示</button>
-            <button class="nav-btn active"><span class="icon">🖥️</span>打卡區</button>
-            <button class="nav-btn"><span class="icon">↗️</span>聯絡簿</button>
+            <button class="nav-btn active" id="navPunch"><span class="icon">🖥️</span>打卡區</button>
+            <button class="nav-btn" id="navContact"><span class="icon">↗️</span>聯絡簿</button>
         </div>
         <div class="action-buttons">
             <button class="action-btn" id="resetBtn"><span class="icon">🔄</span>重置</button>
             <button class="action-btn"><span class="icon">📄</span>CSV報表</button>
             <button class="action-btn" id="exportBtn"><span class="icon">📤</span>匯出</button>
-            <button class="action-btn"><span class="icon">📥</span>匯入</button>
             <button class="action-btn settings-btn"><span class="icon">⚙️</span>設定</button>
         </div>
     </header>
 
     <main>
-        <div class="clock-section">
+        <div class="clock-section" id="clockSection">
             <div class="digital-clock" id="digitalClock">--:--:--</div>
         </div>
 
-        <div class="summary-section">
+        <div class="summary-section" id="summarySection">
             <div class="summary-badge badge-total">應到: <span id="totalCount">30</span></div>
             <div class="summary-badge badge-present">已到: <span id="presentCount">0</span></div>
             <div class="summary-badge badge-late">遲到: <span id="lateCount">0</span></div>
@@ -123,257 +146,41 @@
 
         <div class="grid-section" id="studentGrid">
             </div>
-    </main>
 
-    <div class="popup-overlay" id="popupOverlay">
-        <div class="popup-content">
-            <div class="popup-header">
-                <div id="popupTitle">聯絡簿 - 1號</div>
-                <span class="close-popup" id="closePopup">&times;</span>
-            </div>
-            <textarea class="contact-input" id="contactInput" placeholder="請輸入需要交接或紀錄的事項..."></textarea>
-            <div class="popup-actions">
-                <button class="popup-btn cancel-btn" id="cancelPopup">取消</button>
-                <button class="popup-btn save-btn" id="savePopup">儲存紀錄</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const defaultStudentCount = 30; // 學生總數
-        let studentsData = [];
-        let currentEditingStudent = -1; 
-
-        // DOM 元素綁定
-        const clockEl = document.getElementById('digitalClock');
-        const gridEl = document.getElementById('studentGrid');
-        const counts = {
-            total: document.getElementById('totalCount'),
-            present: document.getElementById('presentCount'),
-            late: document.getElementById('lateCount'),
-            absent: document.getElementById('absentCount'),
-            excused: document.getElementById('excusedCount'),
-            club: document.getElementById('clubCount')
-        };
-        const resetBtn = document.getElementById('resetBtn');
-        const exportBtn = document.getElementById('exportBtn');
-        const navBtns = document.querySelectorAll('.nav-btn');
-
-        // 彈窗 DOM
-        const popupOverlay = document.getElementById('popupOverlay');
-        const popupTitle = document.getElementById('popupTitle');
-        const contactInput = document.getElementById('contactInput');
-        const closePopup = document.getElementById('closePopup');
-        const cancelPopup = document.getElementById('cancelPopup');
-        const savePopup = document.getElementById('savePopup');
-
-        // 初始化執行
-        window.onload = function() {
-            loadStudentsData();
-            startClock();
-            renderGrid();
-            updateSummary();
-            setupResetButton();
-            setupExportButton();
-            setupNavButtons();
-            setupPopupButtons();
-        };
-
-        // --- 數位時鐘 ---
-        function startClock() {
-            function update() {
-                const now = new Date();
-                const h = String(now.getHours()).padStart(2, '0');
-                const m = String(now.getMinutes()).padStart(2, '0');
-                const s = String(now.getSeconds()).padStart(2, '0');
-                clockEl.innerText = `${h}:${m}:${s}`;
-            }
-            update();
-            setInterval(update, 1000);
-        }
-
-        // --- 將時間物件轉為 HH:MM 格式 ---
-        function formatTime(dateString) {
-            if (!dateString) return '';
-            const d = new Date(dateString);
-            return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-        }
-
-        // --- 數據載入與儲存 ---
-        function loadStudentsData() {
-            const storedData = localStorage.getItem('classManageStudentsDataV2'); // 換新 key 避免舊資料衝突
-            if (storedData) {
-                studentsData = JSON.parse(storedData);
-            } else {
-                for (let i = 1; i <= defaultStudentCount; i++) {
-                    studentsData.push({
-                        no: i,
-                        status: 'absent', // 預設未到
-                        punchTime: null,
-                        contactLog: ''
-                    });
-                }
-                saveStudentsData();
-            }
-        }
-
-        function saveStudentsData() {
-            localStorage.setItem('classManageStudentsDataV2', JSON.stringify(studentsData));
-        }
-
-        // --- 網格渲染 (關鍵更新：時間顯示) ---
-        function renderGrid() {
-            gridEl.innerHTML = ''; 
-            const activeNav = document.querySelector('.nav-btn.active').innerText.trim();
-            const isContactMode = activeNav.includes('聯絡簿');
-
-            studentsData.forEach((student, index) => {
-                const card = document.createElement('div');
-                card.className = `student-card is-${student.status}`;
-                card.dataset.index = index;
-
-                // 決定卡片下方要顯示什麼文字
-                let displayText = '';
-                if (isContactMode) {
-                    displayText = student.contactLog ? '📝有紀錄' : '點擊紀錄';
-                } else {
-                    // 打卡模式下
-                    if (student.status === 'present' || student.status === 'late') {
-                        displayText = formatTime(student.punchTime); // 顯示 HH:MM
-                    } else if (student.status === 'absent') {
-                        displayText = '未到';
-                    } else if (student.status === 'excused') {
-                        displayText = '請假';
-                    } else if (student.status === 'club') {
-                        displayText = '社團';
-                    }
-                }
-
-                card.innerHTML = `
-                    <div class="student-no">${student.no}</div>
-                    <div class="student-status-text">${displayText}</div>
-                `;
-                card.onclick = handleCardClick;
-                gridEl.appendChild(card);
-            });
-        }
-
-        // --- 卡片點擊處理 ---
-        function handleCardClick() {
-            const index = this.dataset.index;
-            const student = studentsData[index];
-            const activeNav = document.querySelector('.nav-btn.active').innerText.trim();
-
-            if (activeNav.includes('打卡區')) {
-                // 狀態循環：未到 -> 已到 -> 遲到 -> 請假 -> 社團 -> 循環
-                const statusOrder = ['absent', 'present', 'late', 'excused', 'club'];
-                let currentIndex = statusOrder.indexOf(student.status);
-                let nextStatus = statusOrder[(currentIndex + 1) % statusOrder.length];
-
-                student.status = nextStatus;
-                
-                // 如果切換到「已到」或「遲到」，記錄當下時間
-                if (nextStatus === 'present' || nextStatus === 'late') {
-                    student.punchTime = new Date().toISOString(); // 記錄標準時間格式
-                } else {
-                    student.punchTime = null; // 其他狀態清除時間
-                }
-
-                saveStudentsData();
-                renderGrid();
-                updateSummary();
-            } else if (activeNav.includes('聯絡簿')) {
-                openContactPopup(index);
-            }
-        }
-
-        // --- 彈窗處理 ---
-        function openContactPopup(index) {
-            currentEditingStudent = index;
-            const student = studentsData[index];
-            popupTitle.innerText = `聯絡簿 - ${student.no}號`;
-            contactInput.value = student.contactLog || '';
-            popupOverlay.style.display = 'flex';
-            setTimeout(() => contactInput.focus(), 100);
-        }
-
-        function closeContactPopup() {
-            popupOverlay.style.display = 'none';
-            currentEditingStudent = -1;
-        }
-
-        function setupPopupButtons() {
-            closePopup.onclick = closeContactPopup;
-            cancelPopup.onclick = closeContactPopup;
-            savePopup.onclick = function() {
-                if (currentEditingStudent !== -1) {
-                    studentsData[currentEditingStudent].contactLog = contactInput.value.trim();
-                    saveStudentsData();
-                    closeContactPopup();
-                    renderGrid(); // 重新渲染以更新卡片上的「📝有紀錄」提示
-                }
-            };
-        }
-
-        // --- 更新上方統計數字 ---
-        function updateSummary() {
-            const summary = { total: studentsData.length, present: 0, late: 0, absent: 0, excused: 0, club: 0 };
-            studentsData.forEach(student => {
-                if (summary[student.status] !== undefined) summary[student.status]++;
-            });
-
-            counts.total.innerText = summary.total;
-            counts.present.innerText = summary.present;
-            counts.late.innerText = summary.late;
-            counts.absent.innerText = summary.absent;
-            counts.excused.innerText = summary.excused;
-            counts.club.innerText = summary.club;
-        }
-
-        // --- 重置與匯出 ---
-        function setupResetButton() {
-            resetBtn.onclick = function() {
-                if (confirm('確定要重置今日所有打卡狀態嗎？（聯絡簿紀錄不會被清除）')) {
-                    studentsData.forEach(student => {
-                        student.status = 'absent';
-                        student.punchTime = null;
-                    });
-                    saveStudentsData();
-                    renderGrid();
-                    updateSummary();
-                }
-            };
-        }
-
-        function setupExportButton() {
-            exportBtn.onclick = function() {
-                let csvContent = "data:text/csv;charset=utf-8,\uFEFF座號,狀態,打卡時間,聯絡簿紀錄\n"; // 加入 BOM 避免 Excel 亂碼
-                studentsData.forEach(s => {
-                    let timeStr = s.punchTime ? formatTime(s.punchTime) : '--';
-                    let statusName = { 'absent':'未到', 'present':'已到', 'late':'遲到', 'excused':'請假', 'club':'社團' }[s.status];
-                    let logEntry = `"${(s.contactLog || '').replace(/"/g, '""')}"`;
-                    csvContent += `${s.no},${statusName},${timeStr},${logEntry}\n`;
-                });
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `打卡報表_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            };
-        }
-
-        // --- 導覽列切換 ---
-        function setupNavButtons() {
-            navBtns.forEach(btn => {
-                btn.onclick = function() {
-                    navBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    renderGrid(); // 根據模式重新繪製卡片內容
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+        <div class="blackboard-section" id="blackboardSection">
+            <div class="blackboard-frame">
+                <div class="blackboard-inner">
+                    <div class="bb-header">
+                        <div class="bb-title-group">
+                            <div class="bb-title">⭐ 今日聯絡簿</div>
+                            <div class="bb-date-nav">
+                                <button class="bb-nav-btn">前一天</button>
+                                <span class="bb-date" id="bbDateDisplay">讀取中...</span>
+                                <button class="bb-nav-btn">後一天</button>
+                            </div>
+                        </div>
+                        <div class="bb-controls">
+                            <button class="bb-ctrl-btn">A-</button>
+                            <button class="bb-ctrl-btn">32</button>
+                            <button class="bb-ctrl-btn">A+</button>
+                            <button class="bb-ctrl-btn">序號</button>
+                            <button class="bb-ctrl-btn bb-edit-btn" id="bbEditToggleBtn">編輯</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bb-content-area" id="bbEditableArea" contenteditable="false">
+                        <ol class="chalk-list" id="bbTaskList">
+                            <li>國習 P.30 - P.32</li>
+                            <li>國作 L3</li>
+                            <li>數作 Ch.3</li>
+                            <li>明帶水彩用具</li>
+                            <li>交午餐回條</li>
+                            <li>做家事</li>
+                        </ol>
+                        
+                        <hr class="bb-divider">
+                        
+                        <div class="morning-title">⭐ 早自習任務 (08:30 前)</div>
+                        <div class="morning-tasks">
+                            <label><input type="checkbox"> 靜心晨讀 10分鐘</label>
+                            <label><input type="checkbox"> 繳交今日
