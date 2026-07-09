@@ -37,4 +37,363 @@
         .badge-present { color: var(--status-present); border-color: #c3f0d5; background-color: #ebfbf0; }
         .badge-late    { color: var(--status-late); border-color: #ffcccc; background-color: #fff0f0; }
         .badge-absent  { color: #e6a23c; border-color: #fce8cc; background-color: #fdf6ec; }
-        .badge-excused { color: var(--status-excused); border-color: #e5ccff
+        .badge-excused { color: var(--status-excused); border-color: #e5ccff; background-color: #f7f0ff; }
+        .badge-club    { color: var(--status-club); border-color: #cce5ff; background-color: #f0f7ff; }
+
+        .grid-section { width: 100%; max-width: 1050px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; justify-items: center; }
+        .student-card { width: 100%; aspect-ratio: 2 / 1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; border: 2px solid var(--border-color); background-color: #fff; position: relative; }
+        .student-card:active { transform: scale(0.95); }
+        .student-no { font-size: 24px; font-weight: bold; margin-bottom: 2px; color: inherit; }
+        .student-name-display { font-size: 12px; color: #888; position: absolute; top: 5px; left: 8px; }
+        .student-status-text { font-size: 13px; font-weight: bold; color: inherit; }
+        
+        .student-card.is-absent { border-color: #e4e7ed; color: #a8abb2; }
+        .student-card.is-present { border-color: #95d475; color: #67c23a; background-color: #f0f9eb; }
+        .student-card.is-late    { border-color: #f89898; color: #f56c6c; background-color: #fef0f0; }
+        .student-card.is-excused { border-color: #d4b3ff; color: #b388ff; background-color: #faf5ff; }
+        .student-card.is-club    { border-color: #a0cfff; color: #409eff; background-color: #ecf5ff; }
+
+        /* --- Blackboard --- */
+        .blackboard-section { display: none; width: 100%; max-width: 1100px; padding: 10px; }
+        .blackboard-frame { background-color: #7b4f31; padding: 15px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .blackboard-inner { background-color: #2b3f36; border-radius: 8px; border: 2px solid #543420; padding: 30px 40px; color: #f4f1c9; min-height: 500px; position: relative; }
+        .bb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 15px; }
+        .bb-title { font-size: 24px; font-weight: bold; color: #ffd700; }
+        .bb-date-nav { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px; font-size: 18px; color: #fff; }
+        .bb-controls { display: flex; gap: 10px; }
+        .bb-ctrl-btn { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 15px; border-radius: 6px; cursor: pointer; }
+        .bb-edit-btn { background-color: #f39c12; color: #333; font-weight: bold; border: none; }
+        .bb-content-area { outline: none; transition: font-family 0.3s; }
+        .bb-content-area[contenteditable="true"] { background-color: rgba(255,255,255,0.05); border-radius: 8px; padding: 10px; }
+        .chalk-list { font-size: 24px; line-height: 2; list-style-position: inside; column-count: 2; column-gap: 40px; margin-bottom: 40px; }
+        .bb-divider { border: 0; height: 1px; background: rgba(255,255,255,0.2); margin: 30px 0; }
+        .morning-title { font-size: 16px; color: #f39c12; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 4px; display: inline-block; margin-bottom: 20px; }
+        .morning-tasks { display: flex; gap: 30px; font-size: 22px; }
+
+        /* --- Popup & Settings UI --- */
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(2px); }
+        .popup-content { background: #fff; padding: 0; border-radius: 12px; width: 90%; max-width: 750px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        .popup-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 1px solid #eee; font-size: 18px; font-weight: bold; color: var(--primary-color); background: #f8f9fa; }
+        .close-popup { font-size: 24px; cursor: pointer; color: #999; }
+        .close-popup:hover { color: #333; }
+        
+        .settings-body { padding: 25px; overflow-y: auto; }
+        .setting-section { margin-bottom: 30px; }
+        .setting-title { font-size: 15px; font-weight: bold; color: #6a7c92; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        
+        .time-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .setting-box { background: #f8f9fa; border: 1px solid #edf2f7; border-radius: 10px; padding: 15px; }
+        .setting-box label { display: block; font-size: 14px; color: #555; margin-bottom: 8px; }
+        .setting-box input[type="time"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+
+        .force-unlock { background: #fff0f2; padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px; color: #e11d48; font-weight: bold; border: 1px solid #ffe4e6; margin-bottom: 20px; }
+        .force-unlock input { padding: 8px; border: 1px solid #fecdd3; border-radius: 6px; width: 100px; text-align: center; }
+        .force-unlock button { background: #f43f5e; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .force-unlock button:hover { background: #e11d48; }
+
+        .list-box { border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; position: relative; margin-bottom: 15px; }
+        .list-box-title { font-weight: bold; color: #333; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .badge-active { background: #ffe4e6; color: #e11d48; font-size: 12px; padding: 2px 8px; border-radius: 12px; }
+        .method-a-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .input-group input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px; }
+        textarea.name-list-input { width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; resize: none; font-family: monospace; }
+        
+        .font-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px; }
+        .font-btn { background: #f8f9fa; border: 1px solid #edf2f7; padding: 15px 10px; border-radius: 10px; cursor: pointer; text-align: center; transition: all 0.2s; color: #555; }
+        .font-btn:hover { border-color: #cbd5e1; }
+        .font-btn.selected { border-color: #f43f5e; color: #f43f5e; font-weight: bold; background: #fffbfa; box-shadow: 0 2px 8px rgba(244,63,94,0.1); }
+        .font-btn .sub-text { font-size: 12px; color: #999; margin-top: 5px; font-weight: normal; }
+        .font-instruction { background: #fffbeb; border: 1px solid #fef3c7; padding: 15px; border-radius: 8px; color: #92400e; font-size: 13px; line-height: 1.6; }
+
+        .popup-footer { padding: 15px 25px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 10px; background: #f8f9fa; }
+        .btn-save { background: #3b82f6; color: white; border: none; padding: 10px 25px; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: bold; }
+        .btn-save:hover { background: #2563eb; }
+        
+        .font-default { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; }
+        .font-kai { font-family: 'BiauKai', 'DFKai-SB', '標楷體', serif; }
+        .font-zhuyin-hanzi { font-family: 'WangHanZong', 'cwTeXKai', 'BiauKai', serif; }
+        .font-zhuyin-only { font-family: 'WangHanZong', sans-serif; letter-spacing: 2px;}
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="title-area"><span class="icon">⭐</span>學生打卡 & 數位聯絡簿<span class="icon">⭐</span></div>
+        <div class="nav-buttons">
+            <button class="nav-btn"><span class="icon">💻</span>分屏顯示</button>
+            <button class="nav-btn active" id="navPunch"><span class="icon">🖥️</span>打卡區</button>
+            <button class="nav-btn" id="navContact"><span class="icon">↗️</span>聯絡簿</button>
+        </div>
+        <div class="action-buttons">
+            <button class="action-btn" onclick="executeReset()"><span class="icon">🔄</span>重置</button>
+            <button class="action-btn" onclick="executeExport()"><span class="icon">📤</span>匯出報表</button>
+            <button class="action-btn settings-btn" onclick="document.getElementById('settingsOverlay').style.display='flex'">
+                <span class="icon">⚙️</span>設定中心
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="clock-section" id="clockSection"><div class="digital-clock" id="digitalClock">--:--:--</div></div>
+        <div class="summary-section" id="summarySection">
+            <div class="summary-badge badge-total">應到: <span id="totalCount">30</span></div>
+            <div class="summary-badge badge-present">已到: <span id="presentCount">0</span></div>
+            <div class="summary-badge badge-late">遲到: <span id="lateCount">0</span></div>
+            <div class="summary-badge badge-absent">未到: <span id="absentCount">30</span></div>
+            <div class="summary-badge badge-excused">請假: <span id="excusedCount">0</span></div>
+            <div class="summary-badge badge-club">社團: <span id="clubCount">0</span></div>
+        </div>
+        <div class="grid-section" id="studentGrid"></div>
+
+        <div class="blackboard-section" id="blackboardSection">
+            <div class="blackboard-frame">
+                <div class="blackboard-inner">
+                    <div class="bb-header">
+                        <div class="bb-title">⭐ 今日聯絡簿 <span class="bb-date-nav" id="bbDateDisplay" style="display:inline-block; margin-left:15px; font-size:16px;"></span></div>
+                        <div class="bb-controls">
+                            <button class="bb-ctrl-btn bb-edit-btn" id="bbEditToggleBtn">編輯</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bb-content-area font-default" id="bbEditableArea" contenteditable="false">
+                        <ol class="chalk-list">
+                            <li>國習 P.30 - P.32</li>
+                            <li>國作 L3</li>
+                            <li>數作 Ch.3</li>
+                            <li>明帶水彩用具</li>
+                            <li>交午餐回條</li>
+                        </ol>
+                        <hr class="bb-divider">
+                        <div class="morning-title">⭐ 早自習任務 (08:30 前)</div>
+                        <div class="morning-tasks">
+                            <label><input type="checkbox"> 靜心晨讀</label>
+                            <label><input type="checkbox"> 繳交作業</label>
+                            <label><input type="checkbox"> 抄寫聯絡簿</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="popup-overlay" id="settingsOverlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <div><span class="icon">⚙️</span> 設定中心</div>
+                <span class="close-popup" onclick="document.getElementById('settingsOverlay').style.display='none'">&times;</span>
+            </div>
+            
+            <div class="settings-body">
+                <div class="setting-section">
+                    <div class="setting-title">⏱️ 時間設定</div>
+                    <div class="time-grid">
+                        <div class="setting-box">
+                            <label>⏰ 遲到時間 (超過此時間打卡記為遲到)</label>
+                            <input type="time" id="setLateTime" value="07:30">
+                        </div>
+                        <div class="setting-box">
+                            <label>⏳ 任務完成時間</label>
+                            <input type="time" value="08:30">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-title">👥 學生名單設定</div>
+                    
+                    <div class="force-unlock">
+                        🔓 強制解鎖: <input type="number" id="unlockInput" placeholder="座號"> 
+                        <button onclick="executeUnlock()">執行</button>
+                        <span style="font-size: 12px; color: #888; font-weight: normal; margin-left: 10px;">(用於手動修改已打卡狀態)</span>
+                    </div>
+
+                    <div class="list-box" style="border-left: 4px solid #f43f5e;">
+                        <div class="list-box-title">方式 A：僅使用數字座號 <span class="badge-active">優先使用</span></div>
+                        <div class="method-a-grid">
+                            <div class="input-group"><label>總人數:</label><input type="number" id="setTotalNum" value="30"></div>
+                            <div class="input-group"><label>空號 (逗號分隔):</label><input type="text" id="setEmpty" placeholder="例: 4,14"></div>
+                            <div class="input-group"><label>請假號碼:</label><input type="text" id="setExcused" placeholder="例: 7"></div>
+                            <div class="input-group"><label>上社團號碼:</label><input type="text" id="setClub" placeholder="例: 12,15"></div>
+                        </div>
+                    </div>
+                    <div class="list-box" style="border-left: 4px solid #3b82f6;">
+                        <div class="list-box-title" style="color: #64748b;">方式 B：匯入學生名單 (開啟此功能將覆蓋方式A)</div>
+                        <textarea class="name-list-input" id="setCustomNames" placeholder="在此貼上名單，格式為「座號,姓名」換行&#10;1,王小明&#10;2,陳小華"></textarea>
+                    </div>
+                </div>
+
+                <div class="setting-section">
+                    <div class="setting-title">🔤 聯絡簿顯示字體</div>
+                    <div class="font-grid" id="fontSelector">
+                        <div class="font-btn selected" data-font="font-default" onclick="selectFont(this, 'font-default')">黑體(預設)</div>
+                        <div class="font-btn" data-font="font-kai" onclick="selectFont(this, 'font-kai')" style="font-family: 'BiauKai', 'DFKai-SB', serif;">標楷體</div>
+                        <div class="font-btn" data-font="font-zhuyin-hanzi" onclick="selectFont(this, 'font-zhuyin-hanzi')">含漢字注音<div class="sub-text">(三種字型)</div></div>
+                        <div class="font-btn" data-font="font-zhuyin-only" onclick="selectFont(this, 'font-zhuyin-only')">僅注音<div class="sub-text">(文鼎寬字)</div></div>
+                    </div>
+                    <div class="font-instruction">
+                        <b>💡 字型安裝說明</b><br>
+                        為確保聯絡簿的注音排版正確顯示，請先上網搜尋下載並在電腦安裝免費字型（如：王漢宗中楷體注音、文鼎注音寬字）。<br>
+                        ⚠️ <span style="color:#dc2626;">安裝完畢後，請務必「重新整理」此網頁，新字型才會生效！</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup-footer">
+                <button class="btn-save" onclick="saveAllSettings()">儲存設定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 核心變數 ---
+        let studentsData = [];
+        let currentFontClass = 'font-default';
+        let lateTimeLimit = '07:30'; 
+
+        const gridEl = document.getElementById('studentGrid');
+        const bbEditableArea = document.getElementById('bbEditableArea');
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const counts = { total: document.getElementById('totalCount'), present: document.getElementById('presentCount'), late: document.getElementById('lateCount'), absent: document.getElementById('absentCount'), excused: document.getElementById('excusedCount'), club: document.getElementById('clubCount') };
+        
+        // --- 程式進入點 ---
+        window.onload = function() {
+            try {
+                loadSettings();
+                generateStudentsList(); 
+                startClock();
+                renderGrid();
+                initBlackboard();
+                setupNavButtons();
+            } catch (error) {
+                console.error("網頁載入時發生錯誤:", error);
+            }
+        };
+
+        // --- 強制解鎖功能 ---
+        function executeUnlock() {
+            const no = document.getElementById('unlockInput').value.trim();
+            if(!no) return alert('請輸入座號喔！');
+            
+            const student = studentsData.find(s => String(s.no) === String(no));
+            if(student) {
+                student.status = 'absent';
+                student.punchTime = null;
+                saveStatuses();
+                renderGrid();
+                updateSummary();
+                alert(`✅ 成功！${no}號的打卡狀態已重置為「未到」。`);
+                document.getElementById('unlockInput').value = ''; // 清空輸入框
+            } else {
+                alert(`找不到 ${no}號，請確認座號是否正確。`);
+            }
+        }
+
+        // --- 儲存與讀取設定功能 ---
+        function selectFont(element, fontClass) {
+            document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('selected'));
+            element.classList.add('selected');
+            currentFontClass = fontClass;
+        }
+
+        function saveAllSettings() {
+            bbEditableArea.className = `bb-content-area ${currentFontClass}`;
+            localStorage.setItem('classFontSetting', currentFontClass);
+            
+            localStorage.setItem('classLateTime', document.getElementById('setLateTime').value);
+            localStorage.setItem('classTotalNum', document.getElementById('setTotalNum').value);
+            localStorage.setItem('classEmpty', document.getElementById('setEmpty').value);
+            localStorage.setItem('classExcused', document.getElementById('setExcused').value);
+            localStorage.setItem('classClub', document.getElementById('setClub').value);
+            localStorage.setItem('classCustomNames', document.getElementById('setCustomNames').value);
+
+            lateTimeLimit = document.getElementById('setLateTime').value || '07:30';
+            
+            generateStudentsList();
+            renderGrid();
+            updateSummary();
+            
+            document.getElementById('settingsOverlay').style.display = 'none';
+            alert('設定已成功儲存並更新！');
+        }
+
+        function loadSettings() {
+            const savedFont = localStorage.getItem('classFontSetting');
+            if (savedFont) {
+                currentFontClass = savedFont;
+                bbEditableArea.className = `bb-content-area ${currentFontClass}`;
+                document.querySelectorAll('.font-btn').forEach(btn => {
+                    btn.classList.toggle('selected', btn.dataset.font === currentFontClass);
+                });
+            }
+            
+            document.getElementById('setLateTime').value = localStorage.getItem('classLateTime') || '07:30';
+            document.getElementById('setTotalNum').value = localStorage.getItem('classTotalNum') || '30';
+            document.getElementById('setEmpty').value = localStorage.getItem('classEmpty') || '';
+            document.getElementById('setExcused').value = localStorage.getItem('classExcused') || '';
+            document.getElementById('setClub').value = localStorage.getItem('classClub') || '';
+            document.getElementById('setCustomNames').value = localStorage.getItem('classCustomNames') || '';
+            
+            lateTimeLimit = document.getElementById('setLateTime').value || '07:30';
+        }
+
+        // --- 名單產生與儲存 ---
+        function generateStudentsList() {
+            let savedStatuses = {};
+            try { savedStatuses = JSON.parse(localStorage.getItem('classManageStudentsDataV5')) || {}; } catch(e) {}
+            
+            studentsData = [];
+            const customNamesRaw = document.getElementById('setCustomNames').value.trim();
+            
+            if (customNamesRaw.length > 0) {
+                const lines = customNamesRaw.split('\n');
+                lines.forEach(line => {
+                    const parts = line.split(',');
+                    if (parts.length >= 2) {
+                        let no = parts[0].trim();
+                        let name = parts[1].trim();
+                        let savedStatus = savedStatuses[no] || { status: 'absent', time: null };
+                        studentsData.push({ no: no, name: name, status: savedStatus.status, punchTime: savedStatus.time });
+                    }
+                });
+            } else {
+                const total = parseInt(document.getElementById('setTotalNum').value) || 30;
+                const emptyArr = document.getElementById('setEmpty').value.split(',').map(n => n.trim());
+                const excusedArr = document.getElementById('setExcused').value.split(',').map(n => n.trim());
+                const clubArr = document.getElementById('setClub').value.split(',').map(n => n.trim());
+
+                for (let i = 1; i <= total; i++) {
+                    const noStr = String(i);
+                    if (emptyArr.includes(noStr)) continue; 
+
+                    let defaultStatus = 'absent';
+                    if (excusedArr.includes(noStr)) defaultStatus = 'excused';
+                    if (clubArr.includes(noStr)) defaultStatus = 'club';
+
+                    let savedStatus = savedStatuses[noStr];
+                    let finalStatus = savedStatus ? savedStatus.status : defaultStatus;
+                    let finalTime = savedStatus ? savedStatus.time : null;
+
+                    studentsData.push({ no: noStr, name: '', status: finalStatus, punchTime: finalTime });
+                }
+            }
+            updateSummary();
+        }
+
+        function saveStatuses() {
+            const statusMap = {};
+            studentsData.forEach(s => { statusMap[s.no] = { status: s.status, time: s.punchTime }; });
+            localStorage.setItem('classManageStudentsDataV5', JSON.stringify(statusMap));
+        }
+
+        // --- 網格渲染與打卡邏輯 ---
+        function renderGrid() {
+            gridEl.innerHTML = ''; 
+            studentsData.forEach((student, index) => {
+                const card = document.createElement('div');
+                card.className = `student-card is-${student.status}`;
+                card.dataset.index = index;
+
+                let displayText = '';
+                if (student.status === 'present' || student.status === 'late') {
+                    displayText = student.punchTime ? formatTime(
